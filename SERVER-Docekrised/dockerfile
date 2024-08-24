@@ -1,0 +1,27 @@
+FROM ubuntu:latest
+RUN apt-get update -y
+RUN apt install wget -y
+
+RUN mkdir /usr/local/java
+RUN mkdir /usr/local/kafka
+RUN mkdir /usr/local/properties
+
+WORKDIR /usr/local/java
+RUN wget https://download.oracle.com/java/22/latest/jdk-22_linux-x64_bin.tar.gz
+RUN tar zxvf jdk-22_linux-x64_bin.tar.gz
+RUN update-alternatives --install "/usr/bin/java" "java" "/usr/local/java/jdk-22.0.2/bin/java" 1
+ENV JAVA_HOME=/usr/local/java/jdk-22.0.2
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+WORKDIR /usr/local/kafka
+RUN wget https://downloads.apache.org/kafka/3.8.0/kafka_2.13-3.8.0.tgz
+RUN tar zxvf kafka_2.13-3.8.0.tgz
+ENV KAFKA_HOME=/usr/local/kafka/kafka_2.13-3.8.0
+ENV PATH=$KAFKA_HOME/bin:$PATH
+
+WORKDIR /usr/local/properties
+COPY broker0.properties ./
+
+EXPOSE 9093
+RUN chmod 755 broker0.properties
+ENTRYPOINT [ "kafka-server-start.sh", "/usr/local/properties/broker0.properties" ]

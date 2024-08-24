@@ -1,0 +1,10 @@
+FROM kafkaserver:latest
+
+
+
+WORKDIR /usr/local/properties
+COPY zookeeper.properties .
+
+EXPOSE 2181
+
+ENTRYPOINT [ "zookeeper-server-start.sh" , "/usr/local/properties/zookeeper.properties"]
