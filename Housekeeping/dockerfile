@@ -1,0 +1,15 @@
+FROM ubuntu:latest
+ENV PORT=8080
+# ARG name="sachin" arg are not readable by scripts ENV are
+
+ENV name="sachin"
+
+RUN mkdir /usr/local/scripts
+
+WORKDIR /usr/local/scripts
+COPY test.sh ./
+
+RUN chmod 755 ./test.sh
+ENV PATH1="/usr/local/scripts/test.sh"
+
+ENTRYPOINT exec $PATH1 

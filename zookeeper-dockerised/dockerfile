@@ -1,10 +1,22 @@
-FROM kafkaserver:latest
+FROM sachin456/kafkaserver:v0
 
 
+#install envsubst binary
+RUN apt-get install -y gettext-base
 
+# copy propertirs file
 WORKDIR /usr/local/properties
 COPY zookeeper.properties .
 
+
+ENV ZOO_CLIENT_PORT=2181
+
+#copy script to override the env
+WORKDIR /usr/local/bin
+COPY env_replace.sh .
+RUN chmod 755 ./env_replace.sh
+
+
 EXPOSE 2181
 
-ENTRYPOINT [ "zookeeper-server-start.sh" , "/usr/local/properties/zookeeper.properties"]
+ENTRYPOINT ["/usr/local/bin/env_replace.sh"]

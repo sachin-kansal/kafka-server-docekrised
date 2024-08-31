@@ -5,6 +5,7 @@ RUN apt install wget -y
 RUN mkdir /usr/local/java
 RUN mkdir /usr/local/kafka
 RUN mkdir /usr/local/properties
+RUN mkdir /usr/local/kafka_logs
 
 WORKDIR /usr/local/java
 RUN wget https://download.oracle.com/java/22/latest/jdk-22_linux-x64_bin.tar.gz
@@ -22,6 +23,19 @@ ENV PATH=$KAFKA_HOME/bin:$PATH
 WORKDIR /usr/local/properties
 COPY broker0.properties ./
 
-EXPOSE 9093
+#kafka broker env variables and default values
+ENV $ID=0
+
+ENV $LISTENER_IP =127.0.0.1
+ENV $PORT=9092
+ENV $NUM_NETWORK_THREAD=3
+ENV $NUM_IO_THREAD=8
+ENV $SO_SNDBUF=102400
+ENV $SO_RCVBUF=102400
+ENV $SO_REQ_MAX_BYTES=102400
+ENV $LOG_DIR=/usr/local/kafka_logs
+ENV $DEF_PARTITION=3
+
+EXPOSE $PORT
 RUN chmod 755 broker0.properties
 ENTRYPOINT [ "kafka-server-start.sh", "/usr/local/properties/broker0.properties" ]
