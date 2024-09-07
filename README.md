@@ -18,5 +18,8 @@ delete dangling images
 
 docker rmi $(docker images -f "dangling=true" -q)
 
+deleting all containers
+docker rm -v -f $(docker ps -qa)
+
 
 docker inspect --format='{{.RepoDigests}}' sachin456/zookeeper:test

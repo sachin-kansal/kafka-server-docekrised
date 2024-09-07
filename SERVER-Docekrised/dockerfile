@@ -4,6 +4,8 @@ RUN apt install wget -y
 
 #install envsubst binary
 RUN apt-get install -y gettext-base
+RUN apt-get install nmap -y
+
 
 RUN mkdir /usr/local/java
 RUN mkdir /usr/local/kafka
@@ -13,13 +15,16 @@ RUN mkdir /usr/local/kafka_logs
 WORKDIR /usr/local/java
 RUN wget https://download.oracle.com/java/22/latest/jdk-22_linux-x64_bin.tar.gz
 RUN tar zxvf jdk-22_linux-x64_bin.tar.gz
+RUN rm ./jdk-22_linux-x64_bin.tar.gz
 RUN update-alternatives --install "/usr/bin/java" "java" "/usr/local/java/jdk-22.0.2/bin/java" 1
 ENV JAVA_HOME=/usr/local/java/jdk-22.0.2
 ENV PATH=$JAVA_HOME/bin:$PATH
 
+
 WORKDIR /usr/local/kafka
 RUN wget https://downloads.apache.org/kafka/3.8.0/kafka_2.13-3.8.0.tgz
 RUN tar zxvf kafka_2.13-3.8.0.tgz
+RUN rm ./kafka_2.13-3.8.0.tgz
 ENV KAFKA_HOME=/usr/local/kafka/kafka_2.13-3.8.0
 ENV PATH=$KAFKA_HOME/bin:$PATH
 
@@ -39,7 +44,13 @@ ENV SO_REQ_MAX_BYTES=102400
 ENV LOG_DIR=/usr/local/kafka_logs
 ENV DEF_PARTITION=3
 
+#zookeeper
+ENV ZOOKEEPER_IP=localhost
+ENV zPORT=2181
+
 EXPOSE 9092
+EXPOSE 2181
+
 # RUN chmod 755 broker0.properties
 RUN chmod 755 broker_env_replace.sh
 ENTRYPOINT [ "/usr/local/properties/broker_env_replace.sh" ]
