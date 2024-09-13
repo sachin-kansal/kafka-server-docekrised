@@ -17,9 +17,10 @@ kubectl taint nodes sachin-kansal-x507ua node-role.kubernetes.io/control-plane:N
 delete dangling images
 
 docker rmi $(docker images -f "dangling=true" -q)
+***
 
 deleting all containers
 docker rm -v -f $(docker ps -qa)
-
-
+***
+comapre docker images
 docker inspect --format='{{.RepoDigests}}' sachin456/zookeeper:test
